@@ -1,12 +1,10 @@
 # Spatiotemporal Analysis of Deforestation Using Siamese U-Net Architecture 
 
 > **Pixel-level forest loss detection from bi-temporal Sentinel-2 satellite imagery**
-> Regions: Meghalaya & Nagaland, Northeast India · 2021 → 2023 · Trained entirely from scratch
+> Regions: Meghalaya & Nagaland, Northeast India · 2021 → 2023 · 𝑻𝒓𝒂𝒊𝒏𝒆𝒅 𝒆𝒏𝒕𝒊𝒓𝒆𝒍𝒚 𝒇𝒓𝒐𝒎 𝒔𝒄𝒓𝒂𝒕𝒄𝒉
 
-[![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python)](https://www.python.org/)
-[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange?logo=tensorflow)](https://tensorflow.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![SDG 15](https://img.shields.io/badge/SDG-15.2%20Life%20on%20Land-brightgreen)](https://sdgs.un.org/goals/goal15)
+
+
 
 ---
 
