@@ -1,4 +1,4 @@
-# 🌲 Spatiotemporal Analysis of Deforestation Using Siamese U-Net v5 Architecture
+# Spatiotemporal Analysis of Deforestation Using Siamese U-Net Architecture 
 
 > **Pixel-level forest loss detection from bi-temporal Sentinel-2 satellite imagery**
 > Regions: Meghalaya & Nagaland, Northeast India · 2021 → 2023 · Trained entirely from scratch
