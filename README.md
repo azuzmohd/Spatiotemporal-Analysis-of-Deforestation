@@ -1,6 +1,6 @@
 # Spatiotemporal Analysis of Deforestation Using Siamese U-Net Architecture 
 
-> **Pixel-level forest loss detection from bi-temporal Sentinel-2 satellite imagery**
+> **Pixel level forest loss detection from bi temporal Sentinel-2 satellite imagery**
 > Regions: Meghalaya & Nagaland, Northeast India · 2021 → 2023 · 𝑻𝒓𝒂𝒊𝒏𝒆𝒅 𝒆𝒏𝒕𝒊𝒓𝒆𝒍𝒚 𝒇𝒓𝒐𝒎 𝒔𝒄𝒓𝒂𝒕𝒄𝒉
 
 
@@ -10,9 +10,9 @@
 
 ## Overview
 
-This project presents a deep learning pipeline for detecting forest loss from bi-temporal Sentinel-2 multispectral satellite imagery. The model takes a pair of satellite image patches from two time points (2021 and 2023) and produces a pixel-level binary segmentation mask indicating where forest has been lost. It was developed under a strict academic constraint: **no pretrained model weights of any kind were permitted**. Every weight in the network was learned from scratch using only the training data provided.
+This project presents a deep learning pipeline for detecting forest loss from bi temporal Sentinel-2 multispectral satellite imagery. The model takes a pair of satellite image patches from two time points (2021 and 2023) and produces a pixel level binary segmentation mask indicating where forest has been lost. It was developed under a strict academic constraint: **no pretrained model weights of any kind were permitted**. Every weight in the network was learned from scratch using only the training data provided.
 
-The project directly addresses **UN SDG 15.2** — halting deforestation and restoring degraded forests by 2030. Northeast India's forests are part of the Indo-Burma biodiversity hotspot, among the most species-rich and threatened ecosystems on Earth.
+The project directly addresses **UN SDG 15.2**  halting deforestation and restoring degraded forests by 2030. Northeast India's forests are part of the Indo Burma biodiversity hotspot, among the most species rich and threatened ecosystems on Earth.
 
 ---
 
@@ -31,7 +31,7 @@ A Dice of 0.447 and AUC of 0.860 trained entirely from scratch compares favourab
 
 ---
 
-## Architecture: Siamese U-Net v4
+## Architecture: Siamese U-Net
 
 ### Core Design
 
@@ -56,18 +56,18 @@ T2 (2023) ──► Shared Encoder ──► skip connections (w/ Channel Attent
 | Component | Detail |
 |---|---|
 | **Shared encoder** | 4 blocks (32/64/128/256 filters), GroupNorm + GELU |
-| **GroupNorm** | Used instead of BatchNorm — stable at small batch sizes (4–8) |
-| **Channel Attention** | Squeeze-and-Excitation on all skip connections; focuses on NIR/SWIR |
-| **ASPP** | Dilation rates 4, 8, 12 + global pooling — multi-scale receptive field |
+| **GroupNorm** | Used instead of BatchNorm stable at small batch sizes (4–8) |
+| **Channel Attention** | Squeeze and Excitation on all skip connections; focuses on NIR/SWIR |
+| **ASPP** | Dilation rates 4, 8, 12 + global pooling  multi-scale receptive field |
 | **Transformer bottleneck** | 4-head self-attention at 16×16; global spatial reasoning |
 | **Deep supervision** | Aux outputs at 32×32 (w=0.2), 64×64 (w=0.4), 128×128 (w=0.2) |
 
 ### Input Channels (9 total)
 
 Raw Sentinel-2 bands (B, G, R, NIR, SWIR1, SWIR2) plus three vegetation indices appended after normalisation:
-- **NDVI** — `(NIR−R)/(NIR+R)` — standard green vegetation indicator
-- **EVI** — Enhanced Vegetation Index, reduces atmospheric and soil noise
-- **SAVI** — Soil-Adjusted Vegetation Index, corrects for soil brightness in cleared areas
+- **NDVI** : `(NIR−R)/(NIR+R)`  standard green vegetation indicator
+- **EVI** : Enhanced Vegetation Index, reduces atmospheric and soil noise
+- **SAVI** : Soil Adjusted Vegetation Index, corrects for soil brightness in cleared areas
 
 ---
 
@@ -79,7 +79,7 @@ Raw Sentinel-2 bands (B, G, R, NIR, SWIR1, SWIR2) plus three vegetation indices 
 | Regions | Meghalaya (subtropical broadleaf) & Nagaland (community forest) |
 | Time Points | T1: 2021, T2: 2023 |
 | Patch Size | 256 × 256 px at 30 m/pixel |
-| Split | 80% train / 20% val, stratified by forest-loss density |
+| Split | 80% train / 20% val, stratified by forest loss density |
 | Positive pixel fraction | < 5% (extreme class imbalance) |
 
 Dataset: [forest-loss-dataset by suranjandas1990](https://www.kaggle.com/datasets/suranjandas1990/forest-loss-dataset)
@@ -113,13 +113,13 @@ Weighted BCE applies a `pos_weight=5.0` penalty to forest-loss pixels, directly 
 
 | Decision | Why |
 |---|---|
-| 50/50 balanced pos/neg sampling | Forest-loss patches are rare; uniform sampling starves the model of positive signal |
-| Global mean/std normalisation | Per-image normalisation destroys inter-temporal spectral differences — the primary change signal |
-| Cosine annealing with 10-epoch warm-up | Prevents early instability; decays smoothly to near-zero by epoch 80 |
-| `ReduceLROnPlateau` removed | Conflicts with cosine annealing; caused erratic mid-cycle LR slashing in earlier experiments |
+| 50/50 balanced pos/neg sampling | Forest loss patches are rare; uniform sampling starves the model of positive signal |
+| Global mean/std normalisation | Per image normalisation destroys intertemporal spectral differences — the primary change signal |
+| Cosine annealing with 10 epoch warm-up | Prevents early instability; decays smoothly to near zero by epoch 80 |
+| `ReduceLROnPlateau` removed | Conflicts with cosine annealing; caused erratic mid cycle LR slashing in earlier experiments |
 | `validation_steps=None` | Evaluates full val set each epoch; truncated evaluation caused oscillating val_dice curves |
-| EarlyStopping patience=20 | Model improves slowly post-warmup; shorter patience triggered prematurely |
-| Conservative augmentation | Flips, 90° rotations, mild noise/brightness only — aggressive warps destroy T1/T2 alignment |
+| EarlyStopping patience=20 | Model improves slowly post warmup; shorter patience triggered prematurely |
+| Conservative augmentation | Flips, 90° rotations, mild noise/brightness only aggressive warps destroy T1/T2 alignment |
 | 8-transform TTA at inference | Averages predictions over all flip+rotation combinations; consistent +1–3 Dice points |
 
 ---
@@ -144,14 +144,13 @@ Automated satellite-based monitoring enables:
 - Community-level monitoring for indigenous forest stewardship programs
 - Long-term trend analysis independent of political reporting cycles
 
-The model includes an interactive **Doctor UI** allowing a researcher to upload any T1/T2 patch pair and receive an area estimate in hectares, a probability map, and a severity classification — without requiring deep technical expertise.
 
 ---
 
 ## Installation
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/spatiotemporal-deforestation-siamese-unet.git
+git clone https://github.com/azuzmohd/spatiotemporal-deforestation-siamese-unet.git
 cd spatiotemporal-deforestation-siamese-unet
 pip install tensorflow numpy pandas matplotlib seaborn scikit-learn ipywidgets
 ```
@@ -163,11 +162,11 @@ Open `forest_loss_detection_v5.ipynb` and run all cells.
 ## Citation
 
 ```bibtex
-@misc{deforestation_siamese_unet_2024,
-  title  = {Spatiotemporal Analysis of Deforestation Using Siamese U-Net v5 Architecture},
-  author = {YOUR NAME},
+@misc{deforestation_siamese_unet_2026,
+  title  = {Spatiotemporal Analysis of Deforestation Using Siamese U-Net Architecture},
+  author = {Abdelaziz Mohammed},
   year   = {2024},
-  url    = {https://github.com/YOUR_USERNAME/spatiotemporal-deforestation-siamese-unet}
+  url    = {https://github.com/azuzmohd/spatiotemporal-deforestation-siamese-unet}
 }
 ```
 
